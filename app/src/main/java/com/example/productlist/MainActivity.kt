@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.productlist.dao.repository.ProductRepository
+import com.example.productlist.model.Product
 import com.example.productlist.ui.theme.ProductListTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("World")
+                    Greeting("Hello World")
                 }
             }
         }
@@ -56,34 +57,39 @@ fun Greeting(name: String) {
         LazyColumn(
             modifier = Modifier.padding(16.dp)
         ) {
-            items(ProductRepository.getProductsList()) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 20.dp),
-                    backgroundColor = Color.Green
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(8.dp)
-                    ) {
-                        Text(
-                            text = "${it.productName}",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = "${it.productDescription}",
-                            fontSize = 12.sp
-                        )
-                        Text(
-                            text = "R$${it.productPrice}",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.End
-                        )
-                    }
-                }
+            items(ProductRepository.getProductsList()) {product ->
+                CreateProductCard(product = product)
             }
+        }
+    }
+}
+
+@Composable
+fun CreateProductCard(product: Product) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 20.dp),
+        backgroundColor = Color.Green
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(8.dp)
+        ) {
+            Text(
+                text = "${product.productName}",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = "${product.productDescription}",
+                fontSize = 12.sp
+            )
+            Text(
+                text = "R$${product.productPrice}",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.End
+            )
         }
     }
 }
@@ -92,6 +98,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     ProductListTheme {
-        Greeting("Eu")
+        Greeting("Hello World")
     }
 }
