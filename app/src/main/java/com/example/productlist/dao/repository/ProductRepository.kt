@@ -1,33 +1,17 @@
 package com.example.productlist.dao.repository
 
+import android.content.Context
+import com.example.productlist.dao.ProductListDb
 import com.example.productlist.model.Product
 
-class ProductRepository {
-    companion object {
-        fun getProductsList(): List<Product> {
-            return listOf(
-                Product(),
-                Product(
-                    id = 1,
-                    productName = "Margarina",
-                    productDescription = "Margarina com sal",
-                    productPrice = 9.99
-                ),
-                Product(
-                    id = 2,
-                    productName = "Calabresa",
-                    productDescription = "Linguiça Calabresa",
-                    productPrice = 12.99
-                ),
-                Product(),
-                Product(),
-                Product(),
-                Product(),
-                Product(),
-                Product(),
-                Product(),
-                Product(),
-            )
-        }
+class ProductRepository(context: Context) {
+    private val db = ProductListDb.getDatabase(context)
+
+    fun getProductsList(): List<Product> {
+        return db.productDao().getProducts()
+    }
+
+    fun insertProduct(product: Product): Long {
+        return db.productDao().insertProduct(product)
     }
 }
