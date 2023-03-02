@@ -1,19 +1,18 @@
 package com.example.productlist
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,22 +42,74 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String) {
+
+    var nameState by remember {
+        mutableStateOf("")
+    }
+    var priceState by remember {
+        mutableStateOf("")
+    }
+    var productState by remember {
+        mutableStateOf(listOf<Product>())
+    }
+
+    val context = LocalContext.current
+    val productRepository = ProductRepository(context)
+    productState = productRepository.getProductsList()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 8.dp),
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Listas com Jetpack Compose",
-            color = Color.Green,
+            color = Color.Blue,
             fontSize = 24.sp,
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Column {
+            Text(text = "Product's name")
+            OutlinedTextField(
+                value = nameState,
+                onValueChange = {nameState = it},
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(text = "Product's price")
+            OutlinedTextField(
+                value = priceState,
+                onValueChange = {priceState = it},
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Button(
+                onClick = {
+                    val product = Product(
+                        productName = nameState,
+                        productPrice = priceState.toDouble()
+                    )
+                    val insertedProduct = productRepository.insertProduct(product)
+                    Toast.makeText(context, "$insertedProduct", Toast.LENGTH_SHORT).show()
+
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Save")
+            }
+        }
 
         LazyColumn(
             modifier = Modifier.padding(16.dp)
         ) {
-            items(ProductRepository.getProductsList()) {product ->
+            items(productState) {product ->
                 ProductCard(product = product)
             }
         }

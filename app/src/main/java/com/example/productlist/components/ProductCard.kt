@@ -20,7 +20,6 @@ fun ProductCard(product: Product) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 20.dp),
-        backgroundColor = Color.Green
     ) {
         Column(
             modifier = Modifier
